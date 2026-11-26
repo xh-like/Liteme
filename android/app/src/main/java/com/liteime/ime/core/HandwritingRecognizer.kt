@@ -79,6 +79,11 @@ object Handwriting {
 
 class HandwritingRecognizer(private val dict: Dictionary) {
 
+    companion object {
+        private const val INS_COST = 0.62
+        private const val DEL_COST = 0.62
+    }
+
     private val byLen = HashMap<Int, ArrayList<Pair<String, String>>>()
     init {
         for ((ch, seq) in dict.strokes) {

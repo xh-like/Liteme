@@ -230,7 +230,7 @@ class ImeService : InputMethodService() {
                     hw,
                     LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f),
                 )
-                val bar = LinearLayout(this).apply {
+                val bar = LinearLayout(this@ImeService).apply {
                     orientation = LinearLayout.HORIZONTAL
                     addView(TextViewButton("退一笔") { hw.undo() })
                     addView(TextViewButton("清空") { hw.clear() })
