@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ime_accent">#3B6FF6</color>
+    <color name="ime_bg">#F2F3F7</color>
+    <color name="key_bg">#FFFFFF</color>
+    <color name="key_pressed">#DCE6FD</color>
+    <color name="key_special">#E4E7EE</color>
+    <color name="text_primary">#1F2329</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="candidate_bg">#FFFFFF</color>
+    <color name="candidate_highlight">#EAF0FE</color>
+    <color name="canvas_bg">#FFFFFF</color>
+    <color name="stroke_color">#1F2329</color>
+</resources>

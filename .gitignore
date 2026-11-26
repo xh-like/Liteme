@@ -1,0 +1,24 @@
+# 本地原始数据缓存（构建词库时下载，云端不需要）
+tools/_cache/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# 打包产物（云端构建生成）
+build/
+dist/
+*.spec
+
+# Gradle / Android
+.gradle/
+android/.gradle/
+android/local.properties
+android/app/build/
+android/build/
+.idea/
+*.iml
+
+# 系统
+.DS_Store
+Thumbs.db

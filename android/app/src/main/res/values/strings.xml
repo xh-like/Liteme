@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LiteIME 轻输入法</string>
+    <string name="subtype_label">中文（LiteIME）</string>
+    <string name="enable_hint">第一步：启用 LiteIME 输入法</string>
+    <string name="pick_hint">第二步：切换到 LiteIME</string>
+    <string name="scheme_label">输入方案</string>
+    <string name="fuzzy_label">模糊音（z/zh、n/l、前后鼻音）</string>
+    <string name="handwriting_tab">手写</string>
+</resources>
