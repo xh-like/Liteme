@@ -2,7 +2,6 @@ package com.liteime.ime.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.Gravity
@@ -16,23 +15,24 @@ import android.widget.TextView
  */
 class CandidateView(
     context: Context,
+    private val theme: ImeTheme,
     private val onPick: (Int) -> Unit,
 ) : HorizontalScrollView(context) {
 
     private val container = LinearLayout(context).apply {
         orientation = LinearLayout.HORIZONTAL
         gravity = Gravity.CENTER_VERTICAL
-        setBackgroundColor(Color.WHITE)
+        setBackgroundColor(theme.candidateBg)
     }
     private val preedit = TextView(context).apply {
-        setTextColor(0xFF3B6FF6.toInt())
+        setTextColor(theme.preeditText)
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
         typeface = Typeface.DEFAULT_BOLD
         setPadding(dp(10), 0, dp(6), 0)
         gravity = Gravity.CENTER_VERTICAL
     }
     private val pageLabel = TextView(context).apply {
-        setTextColor(0xFF6B7280.toInt())
+        setTextColor(theme.pageText)
         setTextSize(TypedValue.COMPLEX_UNIT_SP, 11f)
         setPadding(dp(6), 0, dp(10), 0)
         gravity = Gravity.CENTER_VERTICAL
@@ -53,11 +53,11 @@ class CandidateView(
         for ((i, c) in cands.withIndex()) {
             val tv = TextView(context).apply {
                 text = "${i + 1}.$c"
-                setTextColor(0xFF1F2329.toInt())
+                setTextColor(theme.candidateText)
                 setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
                 setPadding(dp(10), dp(8), dp(10), dp(8))
                 setOnClickListener { onPick(i) }
-                setBackgroundColor(if (i == 0) 0xFFEAF0FE.toInt() else Color.WHITE)
+                setBackgroundColor(if (i == 0) theme.candidateFirstBg else theme.candidateBg)
             }
             container.addView(tv)
         }
