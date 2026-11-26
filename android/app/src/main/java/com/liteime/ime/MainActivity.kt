@@ -74,10 +74,10 @@ class MainActivity : Activity() {
         root.addView(title("键盘主题"))
         val themeGroup = RadioGroup(this)
         val themes = listOf(
-            "light" to "浅色（Floris 风格）",
-            "dark" to "深色",
+            "material_light" to "语燕浅色",
+            "material_dark" to "语燕深色",
         )
-        val currentTheme = prefs.getString("theme", "light")
+        val currentTheme = prefs.getString("theme", "material_light")
         for ((key, label) in themes) {
             val rb = RadioButton(this).apply {
                 text = label
