@@ -52,10 +52,11 @@ class CandidateView(
         while (container.childCount > 1) container.removeViewAt(1)
         for ((i, c) in cands.withIndex()) {
             val tv = TextView(context).apply {
-                text = "${i + 1}.$c"
+                // 语燕风格：候选词不带数字编号，20sp 居中、左右 10dp padding
+                text = c
                 setTextColor(theme.candidateText)
-                setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
-                setPadding(dp(10), dp(8), dp(10), dp(8))
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
+                setPadding(dp(10), dp(6), dp(10), dp(6))
                 setOnClickListener { onPick(i) }
                 setBackgroundColor(if (i == 0) theme.candidateFirstBg else theme.candidateBg)
             }
