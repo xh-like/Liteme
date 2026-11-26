@@ -6,8 +6,6 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Typeface
-import android.os.Build
-import android.os.LocaleList
 import android.view.MotionEvent
 import android.view.View
 import java.util.Locale
@@ -75,12 +73,7 @@ class KeyboardView(context: Context, private val onKeyEvent: (code: Int, label: 
         // 关键：显式指定中文字体与 locale，避免自绘 Canvas 在部分设备上
         // 不 fallback 到中文字形而显示成方块/乱码
         typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            textLocale = LocaleList(Locale.CHINESE)
-        } else {
-            @Suppress("DEPRECATION")
-            textLocale = Locale.CHINESE
-        }
+        textLocale = Locale.CHINESE
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
