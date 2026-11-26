@@ -71,6 +71,27 @@ class MainActivity : Activity() {
         }
         root.addView(fuzzy)
 
+        root.addView(title("键盘主题"))
+        val themeGroup = RadioGroup(this)
+        val themes = listOf(
+            "light" to "浅色（Floris 风格）",
+            "dark" to "深色",
+        )
+        val currentTheme = prefs.getString("theme", "light")
+        for ((key, label) in themes) {
+            val rb = RadioButton(this).apply {
+                text = label
+                id = IdGen.generateViewId()
+                isChecked = key == currentTheme
+                setOnClickListener {
+                    prefs.edit().putString("theme", key).apply()
+                    Toast.makeText(context, "已切换到$label，重新弹出键盘生效", Toast.LENGTH_SHORT).show()
+                }
+            }
+            themeGroup.addView(rb)
+        }
+        root.addView(themeGroup)
+
         root.addView(subtitle("提示：英文模式下直接输入字母；中文模式点「中/英」切换。"))
 
         setContentView(root)
