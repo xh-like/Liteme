@@ -87,7 +87,7 @@ class ImeService : InputMethodService() {
         )
         rootLayout.addView(
             container,
-            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f),
+            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(280)),
         )
         return rootLayout
     }
