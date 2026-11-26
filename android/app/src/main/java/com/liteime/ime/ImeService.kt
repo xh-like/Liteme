@@ -15,8 +15,10 @@ import com.liteime.ime.ui.CandidateView
 import com.liteime.ime.ui.HandwritingView
 import com.liteime.ime.ui.ImeTheme
 import com.liteime.ime.ui.KeyboardView
+import com.liteime.ime.ui.ToolbarView
 import java.io.BufferedReader
 import java.io.InputStreamReader
+import java.util.Locale
 import java.util.concurrent.Executors
 
 class ImeService : InputMethodService() {
@@ -29,6 +31,7 @@ class ImeService : InputMethodService() {
     private lateinit var rootLayout: LinearLayout
     private lateinit var candidateView: CandidateView
     private lateinit var keyboardView: KeyboardView
+    private lateinit var toolbarView: ToolbarView
     private lateinit var container: FrameLayout
 
     private var handwritingView: HandwritingView? = null
@@ -71,9 +74,10 @@ class ImeService : InputMethodService() {
         val theme = ImeTheme.load(this)
         rootLayout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setBackgroundColor(theme.background)
+            setBackgroundColor(theme.keyboardBg)
         }
         candidateView = CandidateView(this, theme) { idx -> pickCandidate(idx) }
+        toolbarView = ToolbarView(this, theme) { action -> onToolbarAction(action) }
         container = FrameLayout(this)
         keyboardView = KeyboardView(this, theme) { code, label -> onKey(code, label) }
         container.addView(
@@ -84,14 +88,38 @@ class ImeService : InputMethodService() {
             ),
         )
         rootLayout.addView(
+            toolbarView,
+            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(52)),
+        )
+        rootLayout.addView(
             candidateView,
-            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(44)),
+            LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(42)),
         )
         rootLayout.addView(
             container,
             LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(280)),
         )
         return rootLayout
+    }
+
+    private fun onToolbarAction(action: String) {
+        when (action) {
+            ToolbarView.ACTION_HANDWRITE -> toggleHandwriting()
+            ToolbarView.ACTION_EMOJI -> commitOrType("😀😂🥰😍😎🤔👍👏🎉❤️🔥✨")
+            ToolbarView.ACTION_CLIPBOARD -> {
+                @Suppress("DEPRECATION")
+                val cm = getSystemService(CLIPBOARD_SERVICE) as android.text.ClipboardManager
+                val text = cm.text?.toString().orEmpty()
+                if (text.isNotEmpty()) commitOrType(text)
+                else Toast.makeText(this, "剪贴板为空", Toast.LENGTH_SHORT).show()
+            }
+            ToolbarView.ACTION_HIDE -> requestHideSelf(0)
+            ToolbarView.ACTION_BRAND -> startActivity(
+                android.content.Intent(this, MainActivity::class.java).apply {
+                    addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                },
+            )
+        }
     }
 
     override fun onStartInputView(info: EditorInfo?, restarting: Boolean) {
@@ -143,11 +171,18 @@ class ImeService : InputMethodService() {
             }
             KeyboardView.KEY_HANDWRITE -> toggleHandwriting()
             else -> {
+                // 键盘视觉为大写字母，拼音引擎与英文输出统一转小写
+                val ch = label.lowercase(Locale.getDefault())
                 if (!modeCn) {
-                    currentInputConnection.commitText(label, 1)
+                    commitOrType(ch)
                     return
                 }
-                raw += label
+                if (ch.length == 1 && ch[0] in '0'..'9') {
+                    // 数字行：数字直接上屏
+                    commitOrType(ch)
+                    return
+                }
+                raw += ch
                 page = 0
                 refreshCandidates()
             }
@@ -227,7 +262,7 @@ class ImeService : InputMethodService() {
             handwritingView = hw
             val panel = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
-                setBackgroundColor(ImeTheme.load(this@ImeService).background)
+                setBackgroundColor(ImeTheme.load(this@ImeService).keyboardBg)
                 addView(
                     hw,
                     LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f),
