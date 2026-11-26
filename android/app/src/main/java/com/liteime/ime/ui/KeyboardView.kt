@@ -81,7 +81,9 @@ class KeyboardView(context: Context, private val onKeyEvent: (code: Int, label: 
         keyRects.clear()
         val gap = (w * 0.012f).roundToInt().toFloat()
         val rowH = (h - gap * (rows.size + 1)) / rows.size
-        paintText.textSize = rowH * 0.36f
+        // 基准字号按「行高」与「普通键宽」的较小者计算，避免键盘被拉伸时字体溢出键位
+        val firstRowUnit = (w - gap * (rows[0].size + 1)) / rows[0].size.toFloat()
+        paintText.textSize = minOf(rowH, firstRowUnit) * 0.38f
         for ((ri, row) in rows.withIndex()) {
             val top = gap + ri * (rowH + gap)
             val specWeight = if (ri >= 2) 1.25f else 1f
@@ -114,8 +116,14 @@ class KeyboardView(context: Context, private val onKeyEvent: (code: Int, label: 
                 else -> paintKey
             }
             canvas.drawRoundRect(rect, 12f, 12f, paint)
+            // 按标签实际宽度自适应缩放，长标签（如"中/英"）自动缩小
+            val base = paintText.textSize
+            val maxW = rect.width() - 10f
+            val tw = paintText.measureText(key.label)
+            paintText.textSize = if (tw > maxW && tw > 0f) base * maxW / tw else base
             val baseline = rect.centerY() - (paintText.descent() + paintText.ascent()) / 2
             canvas.drawText(key.label, rect.centerX(), baseline, paintText)
+            paintText.textSize = base
         }
     }
 
