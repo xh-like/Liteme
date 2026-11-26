@@ -13,6 +13,7 @@ import com.liteime.ime.core.PinyinEngine
 import com.liteime.ime.core.Predictor
 import com.liteime.ime.ui.CandidateView
 import com.liteime.ime.ui.HandwritingView
+import com.liteime.ime.ui.ImeTheme
 import com.liteime.ime.ui.KeyboardView
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -67,13 +68,14 @@ class ImeService : InputMethodService() {
     }
 
     override fun onCreateInputView(): View {
+        val theme = ImeTheme.load(this)
         rootLayout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setBackgroundColor(0xFFF2F3F7.toInt())
+            setBackgroundColor(theme.background)
         }
-        candidateView = CandidateView(this) { idx -> pickCandidate(idx) }
+        candidateView = CandidateView(this, theme) { idx -> pickCandidate(idx) }
         container = FrameLayout(this)
-        keyboardView = KeyboardView(this) { code, label -> onKey(code, label) }
+        keyboardView = KeyboardView(this, theme) { code, label -> onKey(code, label) }
         container.addView(
             keyboardView,
             FrameLayout.LayoutParams(
@@ -215,7 +217,7 @@ class ImeService : InputMethodService() {
         handwritingMode = !handwritingMode
         container.removeAllViews()
         if (handwritingMode) {
-            val hw = HandwritingView(this) { strokes ->
+            val hw = HandwritingView(this, ImeTheme.load(this)) { strokes ->
                 val rec = recognizer
                 if (strokes.isEmpty() || rec == null) return@HandwritingView
                 val result = rec.recognize(strokes, 10)
@@ -225,7 +227,7 @@ class ImeService : InputMethodService() {
             handwritingView = hw
             val panel = LinearLayout(this).apply {
                 orientation = LinearLayout.VERTICAL
-                setBackgroundColor(0xFFF2F3F7.toInt())
+                setBackgroundColor(ImeTheme.load(this@ImeService).background)
                 addView(
                     hw,
                     LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f),
