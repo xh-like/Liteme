@@ -14,6 +14,7 @@ import android.view.View
  */
 class HandwritingView(
     context: Context,
+    theme: ImeTheme = ImeTheme.LIGHT_THEME,
     private val onStrokesChanged: (List<List<Pair<Double, Double>>>) -> Unit,
 ) : View(context) {
 
@@ -21,13 +22,13 @@ class HandwritingView(
     private var current = ArrayList<Pair<Double, Double>>()
 
     private val paintStroke = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = 0xFF1F2329.toInt()
+        color = theme.handwritingInk
         style = Paint.Style.STROKE
         strokeWidth = 10f
         strokeCap = Paint.Cap.ROUND
         strokeJoin = Paint.Join.ROUND
     }
-    private val paintBg = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = 0xFFFFFFFF.toInt() }
+    private val paintBg = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = theme.handwritingBg }
 
     override fun onDraw(canvas: Canvas) {
         canvas.drawRoundRect(0f, 0f, width.toFloat(), height.toFloat(), 16f, 16f, paintBg)
